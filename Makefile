@@ -1,6 +1,6 @@
-BACKEND_CONTAINER ?= 'PROJECT_NAME-backend'
-FRONTEND_CONTAINER ?= 'PROJECT_NAME-frontend'
-DATABASE_CONTAINER ?= 'PROJECT_NAME-db'
+BACKEND_CONTAINER ?= 'pointer-backend'
+FRONTEND_CONTAINER ?= 'pointer-frontend'
+DATABASE_CONTAINER ?= 'pointer-db'
 
 build:
 	@docker-compose build

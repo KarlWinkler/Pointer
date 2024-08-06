@@ -1,7 +1,7 @@
 version: '3'
 services:
   backend:
-    container_name: PROJECT_NAME-backend
+    container_name: pointer-backend
     build:
       context: ./backend
       dockerfile: dockerfile-backend
@@ -16,7 +16,7 @@ services:
     volumes:
       - ./backend:/app
   db:
-    container_name: PROJECT_NAME-db
+    container_name: pointer-db
     image: postgres
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
@@ -25,12 +25,12 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
   redis:
-    container_name: PROJECT_NAME-redis
+    container_name: pointer-redis
     image: redis
     ports:
       - 6379:6379
   frontend:
-    container_name: PROJECT_NAME-frontend
+    container_name: pointer-frontend
     build:
       context: ./frontend
       dockerfile: dockerfile-frontend
