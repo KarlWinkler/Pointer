@@ -3,6 +3,7 @@ Django==4.2.11
 django-cors-headers==3.13.0
 django-ninja==1.2.2
 django-pdb==0.6.2
+pillow==10.4.0
 psycopg2==2.9.3
 python-dotenv==1.0.1
 sqlparse==0.5.1
