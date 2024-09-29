@@ -1,13 +1,16 @@
 from django.db import models
 
-from django.contrib.auth.models import User as AuthUser
+from django.contrib.auth.models import AbstractUser
 
-class User(models.Model):
-    user = models.OneToOneField(AuthUser, on_delete=models.CASCADE)
+class User(AbstractUser):
+    username = models.TextField(unique=True)
+    first_name = models.TextField()
+    last_name = models.TextField()
+    email = models.EmailField(unique=True)
     preferences = models.TextField(default='')
 
     image = models.ImageField(default='default.jpg', upload_to='profile_images')
     bio = models.TextField(default='')
 
     def __str__(self):
-        return f'{self.user.username}'
+        return f'{self.first_name} {self.last_name}'
