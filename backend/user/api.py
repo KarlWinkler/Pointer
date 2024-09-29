@@ -6,22 +6,21 @@ from django.urls import path
 from ninja import Router
 
 from .models import User
-from .schemas.login_schema import Credentials
+from .schemas.login_schema import Credentials, Error, UserSchema
 
 router = Router()
 
-@router.post("/login")
+@router.post("/login", response = {401: Error, 200: UserSchema})
 def login(request, credentials: Credentials):
     user_credentials = credentials
 
-    user = authenticate(request, username=user_credentials.username, password=user_credentials.password)
+    user = authenticate(request, username=credentials.username, password=credentials.password)
 
     if user is not None:
-        auth_login(request._request, user)
-        serializer = UserSerializer(user, many=False)
-        return serializer.data
+        auth_login(request, user)
+        return 200, user
     else:
-        return {'message': 'invalid credentials'}
+        return 401, {'message': 'invalid credentials'}
 
 
 @router.post("/logout")
