@@ -11,7 +11,7 @@ up:
 down:
 	@docker-compose down
 
-makemigrations:
+migrations:
 	@docker exec -it ${BACKEND_CONTAINER} python manage.py makemigrations
 
 migrate:
@@ -21,7 +21,7 @@ shell:
 	@docker exec -it ${BACKEND_CONTAINER} sh -c '/bin/bash'
 
 db:
-	@docker exec -it ${DATABASE_CONTAINER} psql -U postgres
+	@docker exec -it ${DATABASE_CONTAINER} psql -U pointer
 
 superuser:
 	@docker exec -it ${BACKEND_CONTAINER} python manage.py createsuperuser
