@@ -6,7 +6,8 @@ from django.urls import path
 from ninja import Router
 
 from .models import User
-from .schemas.login_schema import Credentials, Error, UserSchema
+from .schemas.login_schema import Credentials, UserSchema
+from .schemas.error_schema import Error
 
 router = Router()
 
