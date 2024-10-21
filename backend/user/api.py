@@ -23,6 +23,22 @@ def login(request, credentials: Credentials):
         return 401, {'message': 'invalid credentials'}
 
 
+@router.post("/signup", response= {422: Error, 201: UserSchema})
+def signup(request, signup: SignupSchema):
+    try:
+        user = User.objects.create(
+            email=signup.email,
+            first_name=signup.first_name,
+            last_name=signup.last_name
+        )
+        user.set_password(signup.password)
+        user.save()
+
+        return 201, user
+    except:
+        return 401, {'message': 'error creating user'}
+
+
 @router.post("/logout")
 def logout(request):
     auth_logout(request)
