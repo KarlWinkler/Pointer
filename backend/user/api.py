@@ -6,22 +6,37 @@ from django.urls import path
 from ninja import Router
 
 from .models import User
-from .schemas.login_schema import Credentials, UserSchema
 from .schemas.error_schema import Error
+from .schemas.login_schema import Credentials, UserSchema
+from .schemas.signup_schema import SignupSchema
 
 router = Router()
 
 @router.post("/login", response = {401: Error, 200: UserSchema})
 def login(request, credentials: Credentials):
-    user_credentials = credentials
-
-    user = authenticate(request, username=credentials.username, password=credentials.password)
+    user = authenticate(request, email=credentials.email, password=credentials.password)
 
     if user is not None:
         auth_login(request, user)
         return 200, user
     else:
         return 401, {'message': 'invalid credentials'}
+
+
+@router.post("/signup", response= {422: Error, 201: UserSchema})
+def signup(request, signup: SignupSchema):
+    try:
+        user = User.objects.create(
+            email=signup.email,
+            first_name=signup.first_name,
+            last_name=signup.last_name
+        )
+        user.set_password(signup.password)
+        user.save()
+
+        return 201, user
+    except:
+        return 401, {'message': 'error creating user'}
 
 
 @router.post("/logout")
