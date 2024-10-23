@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     first_name = models.TextField()
     last_name = models.TextField()
