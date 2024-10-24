@@ -8,8 +8,9 @@ from ninja import Router
 
 from .models import User
 from .schemas.error_schema import Error
-from .schemas.login_schema import Credentials, UserSchema
+from .schemas.login_schema import Credentials
 from .schemas.signup_schema import SignupSchema
+from .schemas.user_schema import UserSchema, UserCreateSchema
 
 from ninja.security import django_auth
 
