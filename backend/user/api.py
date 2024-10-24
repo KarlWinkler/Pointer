@@ -2,6 +2,7 @@ from ninja.security import HttpBasicAuth
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+from django.shortcuts import get_object_or_404
 from django.urls import path
 from ninja import Router
 
@@ -14,11 +15,17 @@ from ninja.security import django_auth
 
 router = Router(auth=django_auth)
 
-@router.get("/", response = {200: list[UserSchema]})
-def list(request):
+@router.get("/", response={200: list[UserSchema]})
+def list_users(request):
     return User.objects.all()
 
-@router.post("/login", response = {401: Error, 200: UserSchema}, auth=None)
+
+@router.get("/{id}", response={404: Error, 200: UserSchema})
+def get_user(request, id: int):
+    return get_object_or_404(User, id=id)
+
+
+@router.post("/login", response={401: Error, 200: UserSchema}, auth=None)
 def login(request, credentials: Credentials):
     user = authenticate(request, email=credentials.email, password=credentials.password)
 
@@ -29,7 +36,7 @@ def login(request, credentials: Credentials):
         return 401, {'message': 'invalid credentials'}
 
 
-@router.post("/signup", response = {422: Error, 201: UserSchema}, auth=None)
+@router.post("/signup", response={422: Error, 201: UserSchema}, auth=None)
 def signup(request, signup: SignupSchema):
     try:
         user = User.objects.create(
