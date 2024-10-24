@@ -10,9 +10,15 @@ from .schemas.error_schema import Error
 from .schemas.login_schema import Credentials, UserSchema
 from .schemas.signup_schema import SignupSchema
 
-router = Router()
+from ninja.security import django_auth
 
-@router.post("/login", response = {401: Error, 200: UserSchema})
+router = Router(auth=django_auth)
+
+@router.get("/", response = {200: list[UserSchema]})
+def list(request):
+    return User.objects.all()
+
+@router.post("/login", response = {401: Error, 200: UserSchema}, auth=None)
 def login(request, credentials: Credentials):
     user = authenticate(request, email=credentials.email, password=credentials.password)
 
@@ -23,7 +29,7 @@ def login(request, credentials: Credentials):
         return 401, {'message': 'invalid credentials'}
 
 
-@router.post("/signup", response= {422: Error, 201: UserSchema})
+@router.post("/signup", response = {422: Error, 201: UserSchema}, auth=None)
 def signup(request, signup: SignupSchema):
     try:
         user = User.objects.create(
