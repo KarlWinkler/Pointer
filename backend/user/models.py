@@ -10,6 +10,7 @@ class User(AbstractUser):
     last_name = models.TextField()
     email = models.EmailField(unique=True)
     preferences = models.TextField(default='')
+    username = models.TextField(null=True, blank=True)
 
     image = models.ImageField(default='default.jpg', upload_to='profile_images')
     bio = models.TextField(default='')
