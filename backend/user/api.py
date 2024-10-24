@@ -26,6 +26,22 @@ def get_user(request, id: int):
     return get_object_or_404(User, id=id)
 
 
+@router.post("/", response={400: Error, 200: UserSchema})
+def create_user(request, userCreateSchema: UserCreateSchema):
+    try:
+        user = User.objects.create(
+            email=userCreateSchema.email,
+            first_name=userCreateSchema.first_name,
+            last_name=userCreateSchema.last_name,
+        )
+        user.set_password(userCreateSchema.password)
+        user.save()
+
+        return user
+    except:
+        return 400, {"message": "Failed to create user"}
+
+
 @router.post("/login", response={401: Error, 200: UserSchema}, auth=None)
 def login(request, credentials: Credentials):
     user = authenticate(request, email=credentials.email, password=credentials.password)
@@ -50,10 +66,10 @@ def signup(request, signup: SignupSchema):
 
         return 201, user
     except:
-        return 401, {'message': 'error creating user'}
+        return 401, {'message': 'Error creating user'}
 
 
 @router.post("/logout")
 def logout(request):
     auth_logout(request)
-    return {'message': 'logged out'}
+    return {'message': 'Logged out'}
