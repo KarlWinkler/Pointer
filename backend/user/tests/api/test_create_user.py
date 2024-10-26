@@ -12,8 +12,8 @@ def test_create_user_with_valid_data(client, user):
     }
     response = client.post("/api/user/", json.dumps(data), content_type='application/json')
 
-    assert response.status_code == 200
-    assert response.json["email"] == data["email"]
+    assert response.status_code == 201
+    assert response.json()["email"] == data["email"]
 
 
 @pytest.mark.django_db
