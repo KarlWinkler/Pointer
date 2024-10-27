@@ -42,3 +42,11 @@ def update_user(request, id: int, data: UserUpdateSchema):
     user.save()
 
     return 200, user
+
+
+@router.delete("/{id}")
+def delete_user(request, id: int):
+    user = get_object_or_404(User, id=id)
+
+    user.delete()
+    return {"message": "User deleted"}
