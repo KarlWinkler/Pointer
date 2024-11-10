@@ -21,6 +21,7 @@ from ninja import NinjaAPI
 api = NinjaAPI()
 
 api.add_router("/user/", "user.api.router")
+api.add_router("/auth", "authentication.api.router")
 
 urlpatterns = [
     path('admin/', admin.site.urls),

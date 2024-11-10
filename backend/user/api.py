@@ -1,45 +1,52 @@
-from ninja.security import HttpBasicAuth
-from django.contrib.auth import authenticate
-from django.contrib.auth import login as auth_login
-from django.contrib.auth import logout as auth_logout
+from django.shortcuts import get_object_or_404
 from django.urls import path
 from ninja import Router
 
 from .models import User
 from .schemas.error_schema import Error
-from .schemas.login_schema import Credentials, UserSchema
-from .schemas.signup_schema import SignupSchema
+from .schemas.user_schema import UserSchema, UserCreateSchema, UserUpdateSchema
 
-router = Router()
+from ninja.security import django_auth
 
-@router.post("/login", response = {401: Error, 200: UserSchema})
-def login(request, credentials: Credentials):
-    user = authenticate(request, email=credentials.email, password=credentials.password)
+router = Router(auth=django_auth)
 
-    if user is not None:
-        auth_login(request, user)
-        return 200, user
-    else:
-        return 401, {'message': 'invalid credentials'}
+@router.get("/", response={200: list[UserSchema]})
+def list_users(request):
+    return User.objects.all()
 
 
-@router.post("/signup", response= {422: Error, 201: UserSchema})
-def signup(request, signup: SignupSchema):
-    try:
-        user = User.objects.create(
-            email=signup.email,
-            first_name=signup.first_name,
-            last_name=signup.last_name
-        )
-        user.set_password(signup.password)
-        user.save()
-
-        return 201, user
-    except:
-        return 401, {'message': 'error creating user'}
+@router.get("/{id}", response={200: UserSchema})
+def get_user(request, id: int):
+    return get_object_or_404(User, id=id)
 
 
-@router.post("/logout")
-def logout(request):
-    auth_logout(request)
-    return {'message': 'logged out'}
+@router.post("/", response={201: UserSchema})
+def create_user(request, data: UserCreateSchema):
+    user = User.objects.create(
+        email=data.email,
+        first_name=data.first_name,
+        last_name=data.last_name,
+    )
+    user.set_password(data.password)
+    user.save()
+
+    return 201, user
+
+
+@router.put("/{id}", response={200: UserSchema})
+def update_user(request, id: int, data: UserUpdateSchema):
+    user = get_object_or_404(User, id=id)
+
+    for attr, value in data.dict(exclude_unset=True).items():
+        setattr(user, attr, value)
+    user.save()
+
+    return 200, user
+
+
+@router.delete("/{id}")
+def delete_user(request, id: int):
+    user = get_object_or_404(User, id=id)
+
+    user.delete()
+    return {"message": "User deleted"}

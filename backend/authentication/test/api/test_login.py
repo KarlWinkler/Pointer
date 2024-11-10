@@ -2,7 +2,6 @@ import pytest
 import json 
 
 from user.models import User
-from user.api import router
 from user.tests.factories.user_factory import UserFactory
 
 @pytest.mark.django_db
@@ -16,7 +15,7 @@ def test_logs_in_user_with_correct_credentials(client):
     user.set_password('user_password')
     user.save()
 
-    response = client.post('/api/user/login', json.dumps(data), content_type='application/json')
+    response = client.post('/api/auth/login', json.dumps(data), content_type='application/json')
 
     assert response.status_code == 200
     assert response.json()["email"] == user.email
@@ -35,6 +34,6 @@ def test_does_not_log_in_user_with_bad_credentials(client):
     user.set_password('user_password')
     user.save()
 
-    response = client.post('/api/user/login', json.dumps(data), content_type='application/json')
+    response = client.post('/api/auth/login', json.dumps(data), content_type='application/json')
 
     assert response.status_code == 401
