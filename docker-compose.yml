@@ -2,10 +2,10 @@ services:
   backend:
     container_name: pointer-backend
     build:
-      context: ./backend
+      context: ./
       dockerfile: dockerfile-backend
     ports:
-      - 8000:8000
+      - 8008:8000
     depends_on:
       - db
     environment:
@@ -13,33 +13,18 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
     volumes:
-      - ./backend:/app
+      - .:/app
   db:
     container_name: pointer-db
     image: postgres
+    ports:
+      - 5433:5432
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - postgres-data:/var/lib/postgresql/data
-  redis:
-    container_name: pointer-redis
-    image: redis
-    ports:
-      - 6379:6379
-  frontend:
-    container_name: pointer-frontend
-    build:
-      context: ./frontend
-      dockerfile: dockerfile-frontend
-    ports:
-      - 3000:3000
-    depends_on:
-      - backend
-    volumes:
-      - /app/node_modules
-      - ./frontend:/app
 volumes:
   postgres-data: {}
 

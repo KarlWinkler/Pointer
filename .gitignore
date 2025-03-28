@@ -13,6 +13,7 @@ __pycache__/
 *.db-journal
 media/
 static/
+http-client.env.json
 
 # React
 **/node_modules/

@@ -1,10 +1,13 @@
 from django.db import models
 
 from django.contrib.auth.models import AbstractUser
+from user.managers import UserManager
 
 class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+    objects = UserManager()
 
     first_name = models.TextField()
     last_name = models.TextField()
